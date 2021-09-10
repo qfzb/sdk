@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"sdk/crypt"
-	xjs "sdk/utils/convert"
+	"github.com/qfzb/sdk/crypt"
+	xjs "github.com/qfzb/sdk/utils/convert"
 
 	uuid "github.com/satori/go.uuid"
 	"github.com/tidwall/gjson"

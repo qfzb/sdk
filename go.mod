@@ -1,4 +1,4 @@
-module sdk
+module github.com/qfzb/sdk
 
 go 1.16
 
