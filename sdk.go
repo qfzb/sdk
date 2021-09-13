@@ -36,7 +36,7 @@ func (lsc *LiveSDKClient) GetToken(tokenType, enterLivePermission int, userId, n
 	plainText := fmt.Sprintf(
 		"%s.%d.%s.%d.%d.%s.%s",
 		userId,
-		time.Now().Unix()*1000,
+		time.Now().UnixNano()/1e6,
 		lsc.AppID,
 		tokenType,
 		enterLivePermission,
@@ -64,7 +64,9 @@ func (lsc *LiveSDKClient) ExtractRequestParams(requestBody string) map[string](i
 		return nil
 	}
 	checkStr := ret[0].String() + ret[1].String() + lsc.SignKey
-	if ret[2].String() != crypt.MD5V1([]byte(checkStr)) {
+	md5 := crypt.MD5V1([]byte(checkStr))
+	fmt.Printf("checkStr:%s MD5:%s", checkStr, md5)
+	if ret[2].String() != md5 {
 		return nil
 	}
 	return xjs.JsonToMap(ret[0].String())
