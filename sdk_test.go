@@ -14,7 +14,7 @@ func TestGetToken(*testing.T) {
 
 	name := "nasa"
 	tokenType := 1
-	enterLivePermission := 1
+	enterLivePermission := 0
 	userId := "123"
 	avatar := "http://www.baidu.com"
 

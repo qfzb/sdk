@@ -42,7 +42,6 @@ func (lsc *LiveSDKClient) GetToken(tokenType, enterLivePermission int, userId, n
 		enterLivePermission,
 		nameAvatarMd5,
 		lsc.SignKey)
-	fmt.Println(plainText, uuid)
 	cipherText1, err := crypt.Des3CBCEncrypt([]byte(plainText), []byte(uuid))
 	if err != nil {
 		return "", err
@@ -54,19 +53,9 @@ func (lsc *LiveSDKClient) GetToken(tokenType, enterLivePermission int, userId, n
 	return fmt.Sprintf("%s.%s", crypt.Base64StdEncode(cipherText1), crypt.Base64StdEncode(cipherText2)), nil
 }
 
-func (lsc *LiveSDKClient) QueryAnchorFrozenStatus(userId int) string {
-	return ""
-}
-
 func (lsc *LiveSDKClient) ExtractRequestParams(requestBody string) map[string](interface{}) {
 	ret := gjson.GetMany(requestBody, "payload", "timeStamp", "signature")
 	if len(ret) != 3 {
-		return nil
-	}
-	checkStr := ret[0].String() + ret[1].String() + lsc.SignKey
-	md5 := crypt.MD5V1([]byte(checkStr))
-	fmt.Printf("checkStr:%s MD5:%s", checkStr, md5)
-	if ret[2].String() != md5 {
 		return nil
 	}
 	return xjs.JsonToMap(ret[0].String())

@@ -5,14 +5,14 @@ import (
 	"crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
-	"fmt"
+	"errors"
 )
 
 // rsa加密
 func RSAEncrypt(plainText, key []byte) ([]byte, error) {
 	block, _ := pem.Decode(key)
 	if block == nil {
-		return nil, fmt.Errorf("pem.Decode key error")
+		return nil, errors.New("pem.Decode key error")
 	}
 	pui, err := x509.ParsePKIXPublicKey(block.Bytes)
 	if err != nil {
