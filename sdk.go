@@ -55,8 +55,8 @@ func (lsc *LiveSDKClient) GetToken(tokenType, enterLivePermission int, userId, n
 }
 
 func (lsc *LiveSDKClient) checkSign(b []gjson.Result) bool {
-	reg := regexp.MustCompile(`:(\s*)([0-9]\d*)`)
-	spy := reg.ReplaceAllString(b[0].String(), "${0}.0")
+	reg := regexp.MustCompile(`(:\s*[0-9]\d*)([,}])`)
+	spy := reg.ReplaceAllString(b[0].String(), "${1}.0${2}")
 	checkStr := spy + fmt.Sprintf("%E", b[1].Float()) + lsc.SignKey
 
 	md5Str := crypt.MD5V1([]byte(checkStr))
