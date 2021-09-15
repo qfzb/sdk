@@ -2,6 +2,7 @@ package sdk
 
 import (
 	"fmt"
+	"regexp"
 	"time"
 
 	"github.com/qfzb/sdk/crypt"
@@ -53,9 +54,26 @@ func (lsc *LiveSDKClient) GetToken(tokenType, enterLivePermission int, userId, n
 	return fmt.Sprintf("%s.%s", crypt.Base64StdEncode(cipherText1), crypt.Base64StdEncode(cipherText2)), nil
 }
 
+func (lsc *LiveSDKClient) checkSign(b []gjson.Result) bool {
+	reg := regexp.MustCompile(`:(\s*)([0-9]\d*)`)
+	spy := reg.ReplaceAllString(b[0].String(), "${0}.0")
+	checkStr := spy + fmt.Sprintf("%E", b[1].Float()) + lsc.SignKey
+
+	md5Str := crypt.MD5V1([]byte(checkStr))
+	fmt.Printf("checkStr:%s md5:%s\n", checkStr, md5Str)
+	if md5Str != b[2].String() {
+		return false
+	} else {
+		return true
+	}
+}
+
 func (lsc *LiveSDKClient) ExtractRequestParams(requestBody string) map[string](interface{}) {
 	ret := gjson.GetMany(requestBody, "payload", "timeStamp", "signature")
 	if len(ret) != 3 {
+		return nil
+	}
+	if !lsc.checkSign(ret) {
 		return nil
 	}
 	return xjs.JsonToMap(ret[0].String())
