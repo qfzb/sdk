@@ -58,9 +58,8 @@ func (lsc *LiveSDKClient) checkSign(b []gjson.Result) bool {
 	reg := regexp.MustCompile(`(:\s*[0-9]\d*)([,}])`)
 	spy := reg.ReplaceAllString(b[0].String(), "${1}.0${2}")
 	checkStr := spy + fmt.Sprintf("%E", b[1].Float()) + lsc.SignKey
-
 	md5Str := crypt.MD5V1([]byte(checkStr))
-	fmt.Printf("checkStr:%s md5:%s\n", checkStr, md5Str)
+	// fmt.Printf("checkStr:%s md5:%s\n", checkStr, md5Str)
 	if md5Str != b[2].String() {
 		return false
 	} else {
@@ -94,5 +93,5 @@ func (lsc *LiveSDKClient) EncryptResponseBody(code int, message string, data int
 	if err != nil {
 		return ""
 	}
-	return fmt.Sprintf("%s.%s", crypt.Base64StdEncode(cipherText1), crypt.Base64StdEncode(cipherText2))
+	return (crypt.Base64StdEncode(cipherText1) + "." + crypt.Base64StdEncode(cipherText2))
 }
